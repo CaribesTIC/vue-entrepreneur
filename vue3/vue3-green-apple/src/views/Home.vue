@@ -64,8 +64,8 @@ fill="currentColor" stroke="none">
       </div-->
       
       <div class="flex justify-center text-lg mt-10 space-x-5">      
-        <router-link to="/login"    class="text-white py-1 px-4 rounded disabled:opacity-25 transition bg-blue-500 hover:bg-blue-700 block border border-gray-300 hover:bg-gray-300 px-4 py-1 rounded">Iniciar sesión</router-link>
-        <router-link to="/register" class="text-white py-1 px-4 rounded disabled:opacity-25 transition bg-gray-500 hover:bg-gray-700 block border border-gray-300 hover:bg-gray-300 px-4 py-1 rounded">Registrarse</router-link>
+        <router-link to="/login"    class="btn btn-primary">Iniciar sesión</router-link>
+        <router-link to="/register" class="btn btn-default">Registrarse</router-link>
       </div>
     </div>
   </div>
