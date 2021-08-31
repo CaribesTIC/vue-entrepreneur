@@ -1,15 +1,17 @@
 <template>
   <div class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0 bg-gray-100">
-  <div id="dynamic-component-demo" class="mt-10">
+  <div id="dynamic-component-demo" class="mt-10 pl-0">
+    <div class="">
     <button
       v-for="tab in tabs"
       v-bind:key="tab"
       v-bind:class="['tab-button', { active: currentTab === tab }]"
       v-on:click="currentTab = tab"
+      class="w-40"
     >
       {{ tab }}
     </button>
-    
+    </div>
     <component
       v-bind:is="currentTabComponent"
       class="tab bg-white"
@@ -20,20 +22,23 @@
 </template>
 
 <script>
-import TabShopcart from './TabShopcart.vue'
-import TabVoucher from './TabVoucher.vue'
+import TabList from './TabList.vue'
+import TabCart from './TabCart.vue'
+//import TabEdit from './TabEdit.vue'
 
 export default {  
   components: {    
-    TabShopcart,
-    TabVoucher
+    TabList,
+    TabCart,
+    //TabEdit
   },  
   data() {
     return {
-      currentTab: 'Shopcart',
+      currentTab: 'List',
       tabs: [
-        'Shopcart',
-        'Voucher'
+        'List',
+        'Cart',
+        //'Edit'
       ]   
     }
   },
