@@ -1,16 +1,13 @@
 <template>
-  <!--https://stackoverflow.com/questions/24132943/overflow-x-not-working
-  style="border: 1px solid #FF0000; float: left; height: auto; overflow-x: auto; width: 400px;"
-  https://codepen.io/paulobrien/pen/gJgqqZ
-  -->
   <div class="demo-tab mx-10">
     <h2>Carrito</h2>
     <hr />
-    <div class="table-data__wrapper">
+    <div class="table-data__wrapper w-96 sm:w-full">
       <table class="table-data">
       <thead>
         <tr class="">             
-          <th colspan="2">Producto(s)</th>
+          <th>Producto(s)</th>
+          <th>Producto(s)</th>
           <th>Precio</th>
           <th>Cantidad</th>
           <!--th style="text-align:right;font-weight:bold;padding:10px;">SubTotal</th-->
