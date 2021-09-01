@@ -75,8 +75,7 @@ export default {
   name: "AppShoppingCart",
   data(){
     return {      
-      //pathPhoto: `../assets/`
-      pathPhoto: ``
+      pathPhoto: `http://api.mv.com/storage/products/`
     }
   },
   methods: {
