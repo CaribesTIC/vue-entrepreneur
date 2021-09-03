@@ -30,7 +30,11 @@ const routes = [
     // this generates a separate chunk (tabs.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Shopcart/Tabs.vue')
-  }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
+  },
 ]
 
 const router = createRouter({
