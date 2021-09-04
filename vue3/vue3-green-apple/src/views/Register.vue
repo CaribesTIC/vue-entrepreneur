@@ -35,7 +35,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
   </div>
   <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
     <!--v-if-->
-    <form>
+    <form @submit.prevent="register">
       <div>
         <label class="block font-medium text-sm text-gray-700" for="name">
           <span>Nombre</span>
@@ -47,8 +47,23 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           required=""
           autofocus=""
           autocomplete="name"
+          v-model="form.name"
         >
       </div>
+      <div>
+        <label class="block font-medium text-sm text-gray-700" for="last_name">
+          <span>Apellido</span>
+        </label>
+        <input
+          class="border border-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-sm shadow-sm mt-1 block w-full"
+          id="last_name"
+          type="text"
+          required=""
+          autofocus=""
+          autocomplete="last_name"
+          v-model="form.last_name"
+        >
+      </div>      
       <div class="mt-4">
         <label class="block font-medium text-sm text-gray-700" for="email">
           <span>Correo Electrónico</span>
@@ -58,6 +73,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           id="email"
           type="email"
           required=""
+          v-model="form.email"
         >
       </div>
       <div class="mt-4">
@@ -69,7 +85,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           id="password"
           type="password"
           required=""
-          autocomplete="new-password">
+          autocomplete="new-password"
+          v-model="form.password"
+        >
         </div>
       <div class="mt-4">
         <label class="block font-medium text-sm text-gray-700" for="password_confirmation">
@@ -80,11 +98,13 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           id="password_confirmation"
           type="password"
           required=""
-          autocomplete="new-password">
+          autocomplete="new-password"
+          v-model="form.password_confirmation"
+        >
       </div>
       <!--v-if-->
       <div class="flex items-center justify-between mt-4">
-        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="http://condominium.dev.com/login"> ¿Ya registrado? </a>
+        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="/login"> ¿Ya registrado? </a>
         <button type="submit" class="ml-4 btn btn-primary"> Registrarse </button>
       </div>
     </form>
@@ -92,3 +112,61 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
 </div>
 </div>
 </template>
+<script>
+import axios from 'axios'
+export default {
+  name: "AppRegister",
+  data(){
+    return{
+      form: {
+        name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
+      }
+
+    }
+  },
+  mounted(){
+    Cookies.remove('token')
+  },
+  methods: {
+    async register() 
+    {
+      // Register the user.
+      await axios.post('http://api.mv.com/api/register', this.form)
+      .then((response) => {
+        console.log(response.status)
+        if (response.status > 200 && response.status < 300)
+        {
+          this.login()
+        }
+    
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    },
+
+    async login()
+    {
+      const credentials = {
+        email: this.form.email,
+        password: this.form.password        
+      }
+      // Submit the form.
+      const { data } = await axios.post('http://api.mv.com/api/login', credentials)
+
+      // Save the token.
+      this.$store.dispatch('saveToken', {
+        token: data.token,
+        remember: this.remember
+      })
+      
+      this.$router.push({ name: 'Products' })
+    }
+  }
+}
+</script>

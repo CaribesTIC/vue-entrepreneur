@@ -32,7 +32,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
   </div>
   <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
   <!--v-if--><!--v-if-->
-  <form>
+  <form @submit.prevent="login">
     <div>
       <label class="block font-medium text-sm text-gray-700" for="email">
         <span>Correo Electrónico</span>
@@ -41,6 +41,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
         class="border border-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-sm shadow-sm mt-1 block w-full"
         id="email"
         type="email"
+        v-model="form.email"
         required=""
         autofocus="">
       </div>
@@ -52,6 +53,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           class="border border-gray-400 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-sm shadow-sm mt-1 block w-full"
           id="password"
           type="password"
+          v-model="form.password"
           required=""
           autocomplete="current-password">
         </div>
@@ -59,6 +61,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           <label class="flex items-center">
             <input
               type="checkbox"
+              v-model="remember"
               class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               name="remember">
             <span class="ml-2 text-sm text-gray-600">Recuérdame</span>
@@ -73,3 +76,59 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           <button type="submit" class="btn btn-primary"> Iniciar sesión </button></div></form></div>
 </div></div>
 </template>
+<script>
+import axios from "axios"
+import Cookies from 'js-cookie'
+
+export default {
+  name: "AppLogin",
+  data(){
+    return{
+      form: {
+        email: '',
+        password: ''
+      },
+      remember: false
+    }
+  },
+  mounted(){
+    Cookies.remove('token')
+
+  },
+  methods: {
+
+      async login () 
+      {
+      // Submit the form.
+      const data = await axios.post('http://api.mv.com/api/login', this.form)
+
+      console.log(data.data)
+
+      if (data.status >= 200 && data.status < 300){
+
+        console.log('save token')
+
+        // Save the token.
+        this.$store.dispatch('saveToken', {
+          token: data.data,
+          remember: this.remember
+        })
+        
+         console.log('redirect to Products')
+         
+         console.log(Cookies.get)
+
+        this.$router.push({ name: 'Products' })
+
+      } else {
+
+
+
+      }
+
+
+    },
+
+  }
+}
+</script>

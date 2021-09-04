@@ -1,12 +1,16 @@
 //import Vue from "vue";
+
 import { createStore } from 'vuex'
 import shop from "../api/shop.js";
 import cart from "./cart.js";
 import products from "./products.js";
+import auth from "./auth.js";
+
 
 export default createStore({
   strict: true,
   modules: {
+    auth,
     cart,
     products
   },
@@ -34,3 +38,7 @@ export default createStore({
   },
   getters: {}
 });
+
+
+
+

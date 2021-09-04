@@ -3,10 +3,9 @@
  */
  
 import axios from 'axios'
- 
-const apiGetProducts = async () => {
-    return await axios.get("http://api.mv.com/api/products");
-};
+import Cookies from 'js-cookie'
+import store from '../store'
+
 
 let _products = [];
 
@@ -14,7 +13,12 @@ export default {
 
   async getProducts(cb) {
     if (_products.length === 0) {
-      let response = await apiGetProducts();
+
+      const sToken = store.getters.token
+
+      const params = { token: sToken.access_token}
+
+      let response = await axios.get("http://api.mv.com/api/auth/products",{params: params});
       _products = response.data;
       cb(_products);
     }        
