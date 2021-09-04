@@ -11,10 +11,12 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash
 RUN apt-get install -y \
     nodejs libc-client-dev libkrb5-dev
 
-RUN npm install -g @vue/cli --verbose
+#RUN npm install -g @vue/cli --verbose
 
 #npm update -g @vue/cli
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY ./httpd.conf /usr/local/apache2/conf/.
 
 ARG uid=1000
