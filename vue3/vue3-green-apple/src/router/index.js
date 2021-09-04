@@ -15,7 +15,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
   },
-  {
+  {it 
     path: '/register',
     name: 'Register',
     // route level code-splitting
@@ -24,8 +24,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
   },
   {
-    path: '/shopcart',
-    name: 'Shopcart',
+    path: '/products',
+    name: 'Products',
     // route level code-splitting
     // this generates a separate chunk (tabs.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
