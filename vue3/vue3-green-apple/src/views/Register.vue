@@ -35,7 +35,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
   </div>
   <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
     <!--v-if-->
-    <form @submit.prevent="register">
+    <form novalidate @submit.prevent="register">
       <div>
         <label class="block font-medium text-sm text-gray-700" for="name">
           <span>Nombre</span>
@@ -49,6 +49,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           autocomplete="name"
           v-model="form.name"
         >
+        <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.name">
+          {{ this.errors.fields.name[0] }}
+        </p>
       </div>
       <div>
         <label class="block font-medium text-sm text-gray-700" for="last_name">
@@ -63,6 +66,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           autocomplete="last_name"
           v-model="form.last_name"
         >
+        <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.last_name">
+          {{ this.errors.fields.last_name[0] }}
+        </p>        
       </div>      
       <div class="mt-4">
         <label class="block font-medium text-sm text-gray-700" for="email">
@@ -75,6 +81,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           required=""
           v-model="form.email"
         >
+        <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.email">
+          {{ this.errors.fields.email[0] }}
+        </p>          
       </div>
       <div class="mt-4">
         <label class="block font-medium text-sm text-gray-700" for="password">
@@ -88,6 +97,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           autocomplete="new-password"
           v-model="form.password"
         >
+        <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.password">
+          {{ this.errors.fields.password[0] }}
+        </p>          
         </div>
       <div class="mt-4">
         <label class="block font-medium text-sm text-gray-700" for="password_confirmation">
@@ -101,10 +113,13 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           autocomplete="new-password"
           v-model="form.password_confirmation"
         >
+        <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.password_confirmation">
+          {{ this.errors.fields.password_confirmation[0] }}
+        </p>          
       </div>
       <!--v-if-->
       <div class="flex items-center justify-between mt-4">
-        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="/login"> ¿Ya registrado? </a>
+        <router-link class="underline text-sm text-gray-600 hover:text-gray-900" to="/login">¿Ya registrado?</router-link>
         <button type="submit" class="ml-4 btn btn-primary"> Registrarse </button>
       </div>
     </form>
@@ -124,12 +139,13 @@ export default {
         email: '',
         password: '',
         password_confirmation: ''
+      },
+      errors: {
+        exist:false,
+        fields: {}
       }
 
     }
-  },
-  mounted(){
-    Cookies.remove('token')
   },
   methods: {
     async register() 
@@ -138,14 +154,17 @@ export default {
       await axios.post('http://api.mv.com/api/register', this.form)
       .then((response) => {
         console.log(response.status)
-        if (response.status > 200 && response.status < 300)
+        if (response.status >= 200 && response.status < 300)
         {
           this.login()
         }
     
       })
       .catch((error) => {
-        console.log(error)
+        this.errors.exist = true;
+        if(error.response.status === 422) {
+          this.errors.fields = error.response.data.errors || {};
+        }
       })
 
     },

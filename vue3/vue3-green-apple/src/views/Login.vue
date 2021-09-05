@@ -2,7 +2,7 @@
 <div class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0 bg-gray-100">
 <div class="bg-gray-100 mx-auto">
   <div>
-    <div class="">
+    <div class="flex justify-center pt-4 sm:justify-start sm:pt-0 w-1/2 y-1/2 h-auto m-auto">
       <router-link to="/">
         <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="200.000000pt" height="220.000000pt" viewBox="0 0 900.000000 920.000000"
@@ -32,7 +32,7 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
   </div>
   <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
   <!--v-if--><!--v-if-->
-  <form @submit.prevent="login">
+  <form novalidate @submit.prevent="login">
     <div>
       <label class="block font-medium text-sm text-gray-700" for="email">
         <span>Correo Electrónico</span>
@@ -44,6 +44,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
         v-model="form.email"
         required=""
         autofocus="">
+        <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.email">
+          {{ this.errors.fields.email[0] }}
+        </p>
       </div>
       <div class="mt-4">
         <label class="block font-medium text-sm text-gray-700" for="password">
@@ -56,6 +59,9 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
           v-model="form.password"
           required=""
           autocomplete="current-password">
+          <p class="mt-2 text-xs text-red-600" v-if="this.errors.exist && this.errors.fields.password">
+            {{ this.errors.fields.password[0] }}
+          </p>          
         </div>
         <div class="block mt-4">
           <label class="flex items-center">
@@ -78,7 +84,6 @@ fill="currentColor" stroke="none"><path d="M1731 9175 c-45 -33 -21 -118 110 -393
 </template>
 <script>
 import axios from "axios"
-import Cookies from 'js-cookie'
 
 export default {
   name: "AppLogin",
@@ -88,44 +93,38 @@ export default {
         email: '',
         password: ''
       },
-      remember: false
+      remember: false,
+      errors: {
+        exist:false,
+        fields: {}
+      }
     }
-  },
-  mounted(){
-    Cookies.remove('token')
-
   },
   methods: {
 
       async login () 
       {
-      // Submit the form.
-      const data = await axios.post('http://api.mv.com/api/login', this.form)
+      await axios.post('http://api.mv.com/api/login', this.form)
+      .then((response) => {
+        console.log(response.status)
+        if (response.status >= 200 && response.status < 300)
+        {
 
-      console.log(data.data)
+          this.$store.dispatch('saveToken', {
+            token: response.data,
+            remember: this.remember
+          })
+          
+          this.$router.push({ name: 'Products' })
+        }
+      })
+      .catch((error) => {
+        this.errors.exist = true;
+        if(error.response.status === 422) {
+          this.errors.fields = error.response.data.errors || {};
+        }
 
-      if (data.status >= 200 && data.status < 300){
-
-        console.log('save token')
-
-        // Save the token.
-        this.$store.dispatch('saveToken', {
-          token: data.data,
-          remember: this.remember
-        })
-        
-         console.log('redirect to Products')
-         
-         console.log(Cookies.get)
-
-        this.$router.push({ name: 'Products' })
-
-      } else {
-
-
-
-      }
-
+      })
 
     },
 
