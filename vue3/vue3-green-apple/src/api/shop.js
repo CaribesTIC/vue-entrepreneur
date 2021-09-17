@@ -1,26 +1,21 @@
 /**
  * Mocking client-server processing
  */
- 
-import axios from 'axios'
-import store from '../store'
 
+import Api from "./api";
+import Csrf from "./csrf";
 
 let _products = [];
 
 export default {
-
   async getProducts(cb) {
     if (_products.length === 0) {
+      await Csrf.getCookie();
 
-      const sToken = store.getters.token
-
-      const params = { token: sToken.access_token}
-
-      let response = await axios.get("http://api.mv.com/api/auth/products",{params: params});
+      let response = await Api.get("/api/auth/products");
       _products = response.data;
       cb(_products);
-    }        
+    }
   },
 
   buyProducts(products, cb, errorCb) {
@@ -30,5 +25,5 @@ export default {
         ? cb()
         : errorCb();
     }, 100);
-  }
+  },
 };
